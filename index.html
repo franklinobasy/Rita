@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>For My Love 💕</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --rose: #c0506a;
+      --blush: #f7e8ed;
+      --deep: #7a2a3e;
+      --gold: #c9a96e;
+      --cream: #fdf6f0;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--cream);
+      font-family: 'Lato', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── Petals ── */
+    .petals-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .petal {
+      position: absolute;
+      top: -40px;
+      font-size: 1.4rem;
+      animation: fall linear infinite;
+      opacity: 0.7;
+    }
+    @keyframes fall {
+      0%   { transform: translateY(0) rotate(0deg) translateX(0); opacity: 0.8; }
+      50%  { transform: translateY(50vh) rotate(180deg) translateX(30px); }
+      100% { transform: translateY(110vh) rotate(360deg) translateX(-20px); opacity: 0; }
+    }
+
+    /* ── Screens ── */
+    .screen {
+      display: none;
+      min-height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
+    .screen.active { display: flex; }
+
+    /* ── Intro Screen ── */
+    #screen-intro {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      gap: 2rem;
+    }
+
+    .photo-frame {
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      border: 5px solid var(--rose);
+      box-shadow: 0 0 0 8px var(--blush), 0 0 0 13px var(--rose);
+      overflow: hidden;
+      animation: heartbeat 2.5s ease-in-out infinite;
+    }
+    .photo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      14%       { transform: scale(1.05); }
+      28%       { transform: scale(1); }
+      42%       { transform: scale(1.05); }
+      70%       { transform: scale(1); }
+    }
+
+    .question-text {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 5vw, 2.8rem);
+      color: var(--deep);
+      line-height: 1.4;
+      max-width: 600px;
+    }
+    .question-text span {
+      color: var(--rose);
+      font-style: italic;
+    }
+
+    .sub-text {
+      font-size: 1rem;
+      color: #888;
+      letter-spacing: 0.05em;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 0.5rem;
+    }
+
+    .btn {
+      padding: 0.85rem 2.5rem;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-family: 'Lato', sans-serif;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+    }
+    .btn:hover { transform: translateY(-3px); }
+
+    .btn-yes {
+      background: var(--rose);
+      color: #fff;
+      box-shadow: 0 6px 20px rgba(192, 80, 106, 0.4);
+    }
+    .btn-yes:hover { box-shadow: 0 10px 28px rgba(192, 80, 106, 0.5); }
+
+    .btn-no {
+      background: #fff;
+      color: var(--rose);
+      border: 2px solid var(--rose);
+      box-shadow: 0 4px 12px rgba(192, 80, 106, 0.15);
+      transition: font-size 0.2s, padding 0.2s, left 0.2s ease, top 0.2s ease;
+    }
+
+    /* ── Tease toast ── */
+    #tease-toast {
+      position: fixed;
+      bottom: 5rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--deep);
+      color: #fff;
+      padding: 0.7rem 1.5rem;
+      border-radius: 50px;
+      font-size: 0.95rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s, transform 0.3s;
+      z-index: 200;
+      white-space: nowrap;
+    }
+    #tease-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ── Letter Screen ── */
+    #screen-letter {
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 3rem 1.5rem 4rem;
+      gap: 2rem;
+    }
+
+    .celebration-header {
+      text-align: center;
+      animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes popIn {
+      0%   { transform: scale(0.4); opacity: 0; }
+      100% { transform: scale(1);   opacity: 1; }
+    }
+
+    .celebration-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      color: var(--deep);
+    }
+    .celebration-header p {
+      font-size: 1rem;
+      color: #999;
+      margin-top: 0.5rem;
+      letter-spacing: 0.06em;
+    }
+
+    .letter-card {
+      background: #fff;
+      border-radius: 20px;
+      max-width: 720px;
+      width: 100%;
+      padding: 3rem 3.5rem;
+      box-shadow: 0 20px 60px rgba(192, 80, 106, 0.12);
+      border-top: 6px solid var(--rose);
+      position: relative;
+      animation: slideUp 0.7s ease 0.3s both;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(40px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+
+    .letter-card::before {
+      content: '❝';
+      position: absolute;
+      top: 1.2rem;
+      left: 2rem;
+      font-size: 4rem;
+      color: var(--blush);
+      font-family: 'Playfair Display', serif;
+      line-height: 1;
+    }
+
+    .letter-body {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1rem, 2.2vw, 1.15rem);
+      color: #3a3a3a;
+      line-height: 1.95;
+      white-space: pre-line;
+    }
+
+    .letter-signature {
+      margin-top: 2.5rem;
+      text-align: right;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      color: var(--rose);
+      font-size: 1.2rem;
+    }
+
+    /* ── Confetti canvas ── */
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* ── Music toggle ── */
+    #music-btn {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: var(--rose);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 1.3rem;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(192, 80, 106, 0.4);
+      z-index: 100;
+      transition: transform 0.2s;
+    }
+    #music-btn:hover { transform: scale(1.1); }
+
+    @media (max-width: 600px) {
+      .letter-card { padding: 2rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Falling petals -->
+<div class="petals-container" id="petals"></div>
+
+<!-- Confetti canvas -->
+<canvas id="confetti-canvas"></canvas>
+
+<!-- Audio -->
+<audio id="bg-music" loop>
+  <source src="Forest-Blakk-feat-Joy-Williams-You-ll-Be-The-Proof-(CeeNaija.com).mp3" type="audio/mpeg" />
+</audio>
+
+<!-- Music toggle -->
+<button id="music-btn" title="Toggle music">🎵</button>
+
+<!-- ── Screen 1: Question ── -->
+<section class="screen active" id="screen-intro">
+  <div class="photo-frame">
+    <img src="IMG_8138.jpeg" alt="My love" />
+  </div>
+
+  <h1 class="question-text">
+    2 years down, forever to go.<br/>
+    <span>Do you want to continue walking this journey with me?</span>
+  </h1>
+  <p class="sub-text">Choose wisely 😏</p>
+
+  <div class="btn-group">
+    <button class="btn btn-yes" id="btn-yes">Of course I do 💕</button>
+    <button class="btn btn-no" id="btn-no">Not really…</button>
+  </div>
+</section>
+
+<div id="tease-toast"></div>
+
+<!-- ── Screen 2: Letter ── -->
+<section class="screen" id="screen-letter">
+  <div class="celebration-header">
+    <h1>Then let me remind you 💌</h1>
+    <p>A little something from my heart to yours</p>
+  </div>
+
+  <div class="letter-card">
+    <p class="letter-body">There are moments when I sit quietly and think about us, about where we started, who we were, and everything we have walked through to become who we are today. And in those moments, one thing becomes so clear to me: we didn't just find love… we built it, nurtured it, and grew into it together.
+
+We have come such a long way. Through the easy days and the difficult ones, through the laughter that filled our hearts and the moments that tested our strength, we chose each other — again and again. And that choice, that commitment, is something I will never take for granted.
+
+You didn't just become my husband, you became my safe place, my partner in everything, and the one person who showed me what love is truly supposed to feel like. A love that is patient, steady, understanding, and real. A love that grows deeper with time, not weaker. A love that doesn't just exist in words, but in actions, in presence, and in the quiet, everyday moments we share.
+
+When I look back at our memories, I see a story that keeps unfolding beautifully. And what excites me even more is knowing that we are not done — we are still writing it. There are so many more dreams to chase, more memories to create, more laughter to share, and more life to experience together. And the most comforting, beautiful thought is that I get to do all of it with you.
+
+I look forward to every chapter ahead of us, the unknown, the planned, the unexpected — because I know that as long as we are together, we will find our way through it all.</p>
+
+    <p class="letter-signature">
+      I love you deeply. In ways words can barely hold, in ways that grow stronger each day, and in ways that I will continue to show you for the rest of our lives.<br/><br/>
+      You are not just part of my journey —<br/>
+      <strong>YOU are my home within it.</strong><br/><br/>
+      I LOVE YOU, MY DARLING HUSBAND 💖
+    </p>
+  </div>
+</section>
+
+<script>
+  // ── Petals ──
+  const petalEmojis = ['🌸', '🌹', '💗', '🌷', '💕', '✨'];
+  const petalContainer = document.getElementById('petals');
+  for (let i = 0; i < 22; i++) {
+    const p = document.createElement('div');
+    p.className = 'petal';
+    p.textContent = petalEmojis[Math.floor(Math.random() * petalEmojis.length)];
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.animationDuration = (6 + Math.random() * 8) + 's';
+    p.style.animationDelay = (Math.random() * 10) + 's';
+    p.style.fontSize = (1 + Math.random() * 1.2) + 'rem';
+    petalContainer.appendChild(p);
+  }
+
+  // ── Music ──
+  const music = document.getElementById('bg-music');
+  const musicBtn = document.getElementById('music-btn');
+  let playing = false;
+
+  musicBtn.addEventListener('click', () => {
+    if (playing) { music.pause(); musicBtn.textContent = '🔇'; }
+    else         { music.play().catch(() => {}); musicBtn.textContent = '🎵'; }
+    playing = !playing;
+  });
+
+  document.addEventListener('click', () => {
+    if (!playing) {
+      music.play().then(() => { playing = true; musicBtn.textContent = '🎵'; }).catch(() => {});
+    }
+  }, { once: true });
+
+  // ── Button state ──
+  const btnYes = document.getElementById('btn-yes');
+  const btnNo  = document.getElementById('btn-no');
+  const toast  = document.getElementById('tease-toast');
+
+  const noMessages = [
+    "Not really…",
+    "Are you sure? 🤔",
+    "Babe, please… 🥺",
+    "Don't do this to me…",
+    "I will be very sad 😢",
+    "Please??? 💔",
+    "Last chance! 😭",
+    "You can't catch me anyway 😜"
+  ];
+
+  const yesTeasePokes = [
+    "Try saying no first… I dare you 😏",
+    "Go on, hit no… just once 👀",
+    "You're missing out 😈",
+    "Click no, I dare you 😏"
+  ];
+
+  let noClickCount   = 0;
+  let yesTeasedCount = 0;
+  let runawayEnabled = false;
+
+  // ── Yes button ──
+  btnYes.addEventListener('click', () => {
+    if (!runawayEnabled) {
+      showToast(yesTeasePokes[Math.min(yesTeasedCount++, yesTeasePokes.length - 1)]);
+    } else {
+      showLetter();
+    }
+  });
+
+  // ── No button ──
+  btnNo.addEventListener('click', () => {
+    noClickCount++;
+
+    // Change text
+    btnNo.textContent = noMessages[Math.min(noClickCount, noMessages.length - 1)];
+
+    // Grow Yes button
+    const curYesSize = parseFloat(window.getComputedStyle(btnYes).fontSize);
+    btnYes.style.fontSize = (curYesSize * 1.35) + 'px';
+    const padY = Math.min(14 + noClickCount * 5, 60);
+    const padX = Math.min(40 + noClickCount * 10, 120);
+    btnYes.style.padding = `${padY}px ${padX}px`;
+
+    // Shrink No button (from click 2 onward)
+    if (noClickCount >= 2) {
+      const curNoSize = parseFloat(window.getComputedStyle(btnNo).fontSize);
+      btnNo.style.fontSize = Math.max(curNoSize * 0.85, 10) + 'px';
+    }
+
+    // Enable runaway after 5 clicks
+    if (noClickCount >= 5 && !runawayEnabled) {
+      runawayEnabled = true;
+      enableRunaway();
+    }
+  });
+
+  function enableRunaway() {
+    btnNo.style.position = 'fixed';
+    btnNo.style.zIndex   = '50';
+    runAway(); // move it immediately
+    btnNo.addEventListener('mouseover', runAway);
+    btnNo.addEventListener('touchstart', runAway, { passive: true });
+  }
+
+  function runAway() {
+    const margin = 20;
+    const bw = btnNo.offsetWidth  || 120;
+    const bh = btnNo.offsetHeight || 44;
+    const maxX = window.innerWidth  - bw - margin;
+    const maxY = window.innerHeight - bh - margin;
+    btnNo.style.left = (Math.random() * maxX + margin / 2) + 'px';
+    btnNo.style.top  = (Math.random() * maxY + margin / 2) + 'px';
+  }
+
+  // ── Toast ──
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+
+  // ── Show letter ──
+  function showLetter() {
+    document.getElementById('screen-intro').classList.remove('active');
+    document.getElementById('screen-letter').classList.add('active');
+    window.scrollTo(0, 0);
+    launchConfetti();
+  }
+
+  // ── Confetti ──
+  function launchConfetti() {
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const colors = ['#c0506a','#f7e8ed','#c9a96e','#7a2a3e','#f9c8d5','#fff'];
+    const pieces = Array.from({ length: 140 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height - canvas.height,
+      r: 4 + Math.random() * 7,
+      d: 3 + Math.random() * 4,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      tiltSpeed: 0.1 + Math.random() * 0.1,
+      angle: 0,
+    }));
+
+    let frame = 0;
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      pieces.forEach(p => {
+        p.angle += p.tiltSpeed;
+        const tilt = Math.sin(p.angle) * 12;
+        p.y += p.d;
+        p.x += Math.sin(p.angle) * 1.5;
+        ctx.beginPath();
+        ctx.ellipse(p.x, p.y, p.r, p.r / 2, tilt, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+        if (p.y > canvas.height) { p.y = -10; p.x = Math.random() * canvas.width; }
+      });
+      frame++;
+      if (frame < 220) requestAnimationFrame(draw);
+      else ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    draw();
+  }
+</script>
+</body>
+</html>
